@@ -64,5 +64,6 @@ RUN mkdir data
 # set the paths to installed libraries and executables
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/radar/lib:/opt/radar/rave/lib:/opt/radar/rsl/lib:/opt/radar/vol2bird/lib:/usr/lib/x86_64-linux-gnu
 ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
+RUN apt autoclean -y && apt autoremove -y
 
 CMD vol2bird
