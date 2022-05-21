@@ -69,11 +69,8 @@ ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
 RUN apt autoclean -y && apt autoremove -y
 
 # Install miniconda base utilities
-RUN echo "deb http://de.archive.ubuntu.com/ubuntu/ saucy-updates main restricted" >> /etc/apt/sources.list
-RUN echo "deb-src http://de.archive.ubuntu.com/ubuntu/ saucy-updates main multiverse restricted universe" >> /etc/apt/sources.list
-
 RUN apt-get update && \
-    apt-get install -y build-essentials  wget && \
+    apt-get install -y wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
