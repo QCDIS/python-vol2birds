@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3
+FROM python:3.8-buster
 
 #============== install vol2bird==============
 # installs using apt-get:
@@ -18,7 +18,7 @@ FROM continuumio/miniconda3
 # * flexold, otherwise configure script of RSL library does not function properly
 
  
-RUN apt-get update &&apt install python3 -y && apt-get install --no-install-recommends -y libconfuse-dev \
+RUN apt-get update && apt-get install --no-install-recommends -y libconfuse-dev \
     libhdf5-dev gcc g++ wget unzip make cmake zlib1g-dev python-dev python-numpy libproj-dev flex-old file \
     && apt-get install -y git git-lfs && apt-get install -y libgsl-dev && apt-get install -y libbz2-dev bison byacc
 
@@ -67,5 +67,20 @@ RUN mkdir data
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/radar/lib:/opt/radar/rave/lib:/opt/radar/rsl/lib:/opt/radar/vol2bird/lib:/usr/lib/x86_64-linux-gnu
 ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
 RUN apt autoclean -y && apt autoremove -y
+
+# Install miniconda base utilities
+RUN apt-get update && \
+    apt-get install -y build-essentials  && \
+    apt-get install -y wget &&
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install miniconda
+ENV CONDA_DIR /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/conda
+
+# Put conda in path so we can use conda activate
+ENV PATH=$CONDA_DIR/bin:$PATH
 
 CMD vol2bird
