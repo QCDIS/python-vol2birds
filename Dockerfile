@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM continuumio/miniconda3
 
 #============== install vol2bird==============
 # installs using apt-get:
