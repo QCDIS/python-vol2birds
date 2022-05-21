@@ -16,7 +16,9 @@ FROM continuumio/miniconda3
 # * numpy
 # * proj4 library
 # * flexold, otherwise configure script of RSL library does not function properly
-RUN apt-get update && apt-get install --no-install-recommends -y libconfuse-dev \
+
+ 
+RUN apt-get update &&apt install python3 -y && apt-get install --no-install-recommends -y libconfuse-dev \
     libhdf5-dev gcc g++ wget unzip make cmake zlib1g-dev python-dev python-numpy libproj-dev flex-old file \
     && apt-get install -y git git-lfs && apt-get install -y libgsl-dev && apt-get install -y libbz2-dev bison byacc
 
