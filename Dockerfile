@@ -72,6 +72,10 @@ RUN git clone https://github.com/adokter/vol2bird.git \
     --with-gsl=/usr/include/gsl,/usr/lib/x86_64-linux-gnu \
     && make && make install && cd .. && rm -rf vol2bird
 
+COPY KNMI_vol_h5_to_ODIM_h5.c .
+RUN gcc -Wall -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -I/usr/include/hdf5/serial KNMI_vol_h5_to_ODIM_h5.c -lhdf5 -lhdf5_hl -o KNMI_vol_h5_to_ODIM_h5
+RUN mv KNMI_vol_h5_to_ODIM_h5 /opt/radar/vol2bird/bin
+
 # clean up
 RUN apt-get remove -y git git-lfs gcc g++ wget unzip make cmake python-numpy -y python-dev flex-old \
     && apt-get clean && apt -y autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -83,5 +87,7 @@ RUN mkdir data
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/radar/lib:/opt/radar/rave/lib:/opt/radar/rsl/lib:/opt/radar/vol2bird/lib:/usr/lib/x86_64-linux-gnu
 ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
 RUN apt autoclean -y && apt autoremove -y
+
+RUN KNMI_vol_h5_to_ODIM_h5
 
 CMD vol2bird
