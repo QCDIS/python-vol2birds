@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM python:3.9-buster
 
 #============== install vol2bird==============
 # installs using apt-get:
@@ -21,6 +21,22 @@ FROM python:3.8-buster
 RUN apt-get update && apt-get install --no-install-recommends -y libconfuse-dev \
     libhdf5-dev gcc g++ wget unzip make cmake zlib1g-dev python-dev python-numpy libproj-dev flex-old file \
     && apt-get install -y git git-lfs && apt-get install -y libgsl-dev && apt-get install -y libbz2-dev bison byacc
+
+
+# Install miniconda base utilities
+RUN apt-get update && \
+    apt-get install -y wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install miniconda
+ENV CONDA_DIR /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/conda
+
+# Put conda in path so we can use conda activate
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda install -c conda-forge mamba conda-merge conda-pack
 
 # get a copy of hlhdf:
 # configure and build hlhdf
@@ -56,6 +72,10 @@ RUN git clone https://github.com/adokter/vol2bird.git \
     --with-gsl=/usr/include/gsl,/usr/lib/x86_64-linux-gnu \
     && make && make install && cd .. && rm -rf vol2bird
 
+COPY KNMI_vol_h5_to_ODIM_h5.c .
+RUN gcc -Wall -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -I/usr/include/hdf5/serial KNMI_vol_h5_to_ODIM_h5.c -lhdf5 -lhdf5_hl -o KNMI_vol_h5_to_ODIM_h5
+RUN mv KNMI_vol_h5_to_ODIM_h5 /opt/radar/vol2bird/bin
+
 # clean up
 RUN apt-get remove -y git git-lfs gcc g++ wget unzip make cmake python-numpy -y python-dev flex-old \
     && apt-get clean && apt -y autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -67,20 +87,5 @@ RUN mkdir data
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/radar/lib:/opt/radar/rave/lib:/opt/radar/rsl/lib:/opt/radar/vol2bird/lib:/usr/lib/x86_64-linux-gnu
 ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
 RUN apt autoclean -y && apt autoremove -y
-
-# Install miniconda base utilities
-RUN apt-get update && \
-    apt-get install -y wget && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install miniconda
-ENV CONDA_DIR /opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-     /bin/bash ~/miniconda.sh -b -p /opt/conda
-
-# Put conda in path so we can use conda activate
-ENV PATH=$CONDA_DIR/bin:$PATH
-RUN conda install conda-pack
 
 CMD vol2bird
