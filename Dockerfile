@@ -90,4 +90,5 @@ RUN apt autoclean -y && apt autoremove -y
 
 COPY test_vol2bird.sh /
 RUN bash /test_vol2bird.sh
+RUN rm /test_vol2bird.sh
 CMD vol2bird
