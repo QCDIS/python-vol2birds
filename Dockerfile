@@ -88,6 +88,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/radar/lib:/opt/radar/rave/lib:/opt/r
 ENV PATH=${PATH}:/opt/radar/vol2bird/bin:/opt/radar/rsl/bin
 RUN apt autoclean -y && apt autoremove -y
 
-RUN vol2bird --version
-
+COPY test_vol2bird.sh /
+RUN bash /test_vol2bird.sh
 CMD vol2bird
