@@ -36,8 +36,8 @@ RUN R -e 'install.packages("bioRad",repos = "http://cran.us.r-project.org")'
 
 
 COPY test_bioRad.R .
-#RUN Rscript test_bioRad.R
-#RUN rm /test_bioRad.R
+RUN Rscript test_bioRad.R
+RUN rm /test_bioRad.R
 
 
 CMD vol2bird
