@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build Docker Image no push
 
 on:
   pull_request:
