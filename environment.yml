@@ -1,0 +1,12 @@
+name: venv
+channels:
+  - conda-forge
+dependencies:
+  - r-units
+  - r-ggplot2
+  - gcc
+  - gdal
+  - libgcc
+  - libstdcxx-ng
+  - pdal
+  
