@@ -6,7 +6,7 @@ on:
       - '*'
       
 env:
-  TAG: "python-vol2birds"
+  TAG: "python-vol2bird"
   DOCKERHUB_IMAGE_ID: "qcdis/"
 
 jobs:
